@@ -1,0 +1,22 @@
+@import "tailwindcss";
+
+:root {
+  --background: 210 50% 96%;
+  --foreground: 220 60% 15%;
+  --primary: 220 65% 28%;
+  --accent: 200 80% 55%;
+  --muted: 210 30% 92%;
+  --edu-nav: 220 65% 22%;
+}
+
+body {
+  background-color: hsl(var(--background));
+  color: hsl(var(--foreground));
+}
+
+.glass-card {
+  background: rgba(255, 255, 255, 0.7);
+  backdrop-filter: blur(12px);
+  border-radius: 16px;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.08);
+}
