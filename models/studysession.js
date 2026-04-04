@@ -14,6 +14,7 @@ module.exports = (sequelize, DataTypes) => {
     }
   }
   StudySession.init({
+    user_id: DataTypes.INTEGER,
     duration: DataTypes.INTEGER,
     date: DataTypes.DATE
   }, {

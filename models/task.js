@@ -14,6 +14,7 @@ module.exports = (sequelize, DataTypes) => {
     }
   }
   Task.init({
+    user_id: DataTypes.INTEGER,
     title: DataTypes.STRING,
     time: DataTypes.STRING,
     is_completed: DataTypes.BOOLEAN,
