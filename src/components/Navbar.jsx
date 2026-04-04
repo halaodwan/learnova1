@@ -6,7 +6,8 @@ function Navbar() {
 
   const links = [
     { name: "Dashboard", path: "/dashboard", icon: <LayoutDashboard size={18} /> },
-    { name: "Summaries", path: "/summaries", icon: <BookOpen size={18} /> },
+    { name: "Summaries", path: "/explanations?mode=summary", icon: <BookOpen size={18} /> },
+    { name: "Explanations", path: "/explanations?mode=explanation", icon: <BookOpen size={18} /> },
     { name: "Flashcards", path: "/flashcards", icon: <Layers size={18} /> },
     { name: "Exams", path: "/exams", icon: <FileText size={18} /> },
   ];
