@@ -12,7 +12,7 @@ const studyMaterialRoutes = require('./Routes/StudyMaterialRoutes');
 
 const contentRoutes = require('./Routes/ContentRoutes');
 
-const flashcardRoutes = require('./Routes/FlachsardRoutes');
+const flashcardRoutes = require('./Routes/FlashcardRoutes');
 
 const examRoutes = require('./Routes/ExamRoutes');
 
@@ -36,7 +36,7 @@ app.use('/study-materials', studyMaterialRoutes);
 
 app.use('/contents', contentRoutes);
 
-app.use('/flashcards', flashsardRoutes);
+app.use('/flashcards', flashcardRoutes);
 
 app.use('/exams', examRoutes);
 
