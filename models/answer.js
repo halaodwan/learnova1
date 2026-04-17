@@ -11,6 +11,41 @@ module.exports = (sequelize, DataTypes) => {
      */
     static associate(models) {
       // define association here
+      Answer.belongsTo(models.Question, {
+
+    foreignKey: 'question_id',
+
+    as: 'question',
+
+    onDelete: 'CASCADE',
+
+    onUpdate: 'CASCADE'
+
+  });
+  Answer.belongsTo(models.User, {
+
+  foreignKey: 'user_id',
+
+  as: 'user',
+
+  onDelete: 'CASCADE',
+
+  onUpdate: 'CASCADE'
+
+});
+Answer.belongsTo(models.Option, {
+
+  foreignKey: 'option_id',
+
+  as: 'option',
+
+  onDelete: 'CASCADE',
+
+  onUpdate: 'CASCADE'
+
+});
+
+
     }
   }
   Answer.init({

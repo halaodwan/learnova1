@@ -11,6 +11,51 @@ module.exports = (sequelize, DataTypes) => {
      */
     static associate(models) {
       // define association here
+    StudyMaterial.hasMany(models.Exam, {
+
+  foreignKey: 'material_id',
+
+  as: 'exams',
+
+  onDelete: 'CASCADE',
+
+  onUpdate: 'CASCADE'
+
+});
+StudyMaterial.belongsTo(models.User, {
+
+  foreignKey: 'user_id',
+
+  as: 'user',
+
+  onDelete: 'CASCADE',
+
+  onUpdate: 'CASCADE'
+
+});
+StudyMaterial.hasMany(models.Content, {
+
+  foreignKey: 'material_id',
+
+  as: 'contents',
+
+  onDelete: 'CASCADE',
+
+  onUpdate: 'CASCADE'
+
+});
+StudyMaterial.hasMany(models.Flashcard, {
+
+  foreignKey: 'material_id',
+
+  as: 'flashcards',
+
+  onDelete: 'CASCADE',
+
+  onUpdate: 'CASCADE'
+
+});
+
     }
   }
   StudyMaterial.init({

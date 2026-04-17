@@ -11,6 +11,30 @@ module.exports = (sequelize, DataTypes) => {
      */
     static associate(models) {
       // define association here
+    Result.belongsTo(models.User, {
+
+  foreignKey: 'user_id',
+
+  as: 'user',
+
+  onDelete: 'CASCADE',
+
+  onUpdate: 'CASCADE'
+
+});
+Result.belongsTo(models.Exam, {
+
+  foreignKey: 'exam_id',
+
+  as: 'exam',
+
+  onDelete: 'CASCADE',
+
+  onUpdate: 'CASCADE'
+
+});
+
+
     }
   }
   Result.init({

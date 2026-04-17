@@ -11,6 +11,30 @@ module.exports = (sequelize, DataTypes) => {
      */
     static associate(models) {
       // define association here
+  Flashcard.belongsTo(models.StudyMaterial, {
+
+  foreignKey: 'material_id',
+
+  as: 'studyMaterial',
+
+  onDelete: 'CASCADE',
+
+  onUpdate: 'CASCADE'
+
+});
+ Flashcard.belongsTo(models.User, {
+
+  foreignKey: 'user_id',
+
+  as: 'user',
+
+  onDelete: 'CASCADE',
+
+  onUpdate: 'CASCADE'
+
+});
+
+
     }
   }
   Flashcard.init({
