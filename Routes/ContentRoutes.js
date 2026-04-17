@@ -7,7 +7,7 @@ const {
   createContent,
   updateContent,
   deleteContent
-} = require('../controllers/contentController');
+} = require('../controllers/ContentController');
 
 router.get('/', getAllContent);
 router.get('/:id', getContentById);

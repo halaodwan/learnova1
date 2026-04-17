@@ -1,7 +1,6 @@
 const { Content } = require('../models');
 
-
-exports.getAllContent = async (req, res) => {
+const getAllContent = async (req, res) => {
   try {
     const content = await Content.findAll();
     res.json(content);
@@ -11,7 +10,7 @@ exports.getAllContent = async (req, res) => {
 };
 
 
-exports.getContentById = async (req, res) => {
+const getContentById = async (req, res) => {
   try {
     const content = await Content.findByPk(req.params.id);
 
@@ -24,7 +23,9 @@ exports.getContentById = async (req, res) => {
     res.status(500).json({ message: error.message });
   }
 };
-exports.createContent = async (req, res) => {
+
+
+const createContent = async (req, res) => {
   try {
     const newContent = await Content.create(req.body);
     res.status(201).json(newContent);
@@ -33,7 +34,7 @@ exports.createContent = async (req, res) => {
   }
 };
 
-exports.updateContent = async (req, res) => {
+const updateContent = async (req, res) => {
   try {
     const content = await Content.findByPk(req.params.id);
 
@@ -48,8 +49,7 @@ exports.updateContent = async (req, res) => {
   }
 };
 
-
-exports.deleteContent = async (req, res) => {
+const deleteContent = async (req, res) => {
   try {
     const content = await Content.findByPk(req.params.id);
 
@@ -62,4 +62,12 @@ exports.deleteContent = async (req, res) => {
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
+};
+
+module.exports = {
+  getAllContent,
+  getContentById,
+  createContent,
+  updateContent,
+  deleteContent
 };
