@@ -6,27 +6,27 @@ app.use(express.json());
 
 // Import routes
 
-const userRoutes = require('./Routes/userRoutes');
+const userRoutes = require('./Routes/UserRoutes');
 
-const studyMaterialRoutes = require('./Routes/studyMaterialRoutes');
+const studyMaterialRoutes = require('./Routes/StudyMaterialRoutes');
 
-const contentRoutes = require('./Routes/contentRoutes');
+const contentRoutes = require('./Routes/ContentRoutes');
 
-const flashcardRoutes = require('./Routes/flashcardRoutes');
+const flashcardRoutes = require('./Routes/FlashcardRoutes');
 
-const examRoutes = require('./Routes/examRoutes');
+const examRoutes = require('./Routes/ExamRoutes');
 
-const questionRoutes = require('./Routes/questionRoutes');
+const questionRoutes = require('./Routes/QuestionRoutes');
 
-const optionRoutes = require('./Routes/optionRoutes');
+const optionRoutes = require('./Routes/OptionRoutes');
 
-const answerRoutes = require('./Routes/answerRoutes');
+const answerRoutes = require('./Routes/AnswerRoutes');
 
-const resultRoutes = require('./Routes/resultRoutes');
+const resultRoutes = require('./Routes/ResultRoutes');
 
-const taskRoutes = require('./Routes/taskRoutes');
+const taskRoutes = require('./Routes/TaskRoutes');
 
-const studySessionRoutes = require('./Routes/studySessionRoutes');
+const studySessionRoutes = require('./Routes/StudySessionRoutes');
 
 // Use routes
 
