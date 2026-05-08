@@ -75,6 +75,10 @@ function App() {
           }
         />
 
+        
+        <Route path="/explanations" element={<Explanations />} />
+        <Route path="/flashcards" element={<Flashcards />} />
+        
       </Routes>
 
     </BrowserRouter>
