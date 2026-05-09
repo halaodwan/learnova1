@@ -30,8 +30,30 @@ function App() {
         />
       )}
 
-      {/* Navbar يظهر دائماً */}
       <Navbar />
+      {isLoggedIn && <Navbar />}
+
+      {isLoggedIn && (
+        <Routes>
+          <Route path="/" element={<Home />} />
+          <Route path="/exams" element={<Exams />} />
+          <Route path="/dashboard" element={<Dashboard />} />
+          <Route path="/explanations" element={<Explanations />} />
+          <Route path="/flashcards" element={<Flashcards />} />
+        </Routes>
+      )}
+
+
+      {!isLoggedIn && !showLogin && (
+        <div className="flex justify-center mt-10">
+          <button
+            onClick={() => setShowLogin(true)}
+            className="bg-blue-600 text-white p-2 rounded"
+          >
+            Login
+          </button>
+        </div>
+      )}
 
       <Routes>
 
