@@ -1,3 +1,4 @@
+import { useEffect, useState } from "react";
 import {
   Paperclip,
   FileText,
@@ -11,15 +12,225 @@ import {
   ClipboardList,
   Timer,
   Play,
+  Pause,
+  RotateCcw,
   Send,
   MessageSquare,
 } from "lucide-react";
 
 function Home() {
+  const API_URL = "http://localhost:3000";
+
+  const [contentText, setContentText] = useState("");
+  const [aiQuestion, setAiQuestion] = useState("");
+  const [seconds, setSeconds] = useState(0);
+  const [isRunning, setIsRunning] = useState(false);
+
+  const userId = 1;
+  const materialId = 1;
+
+  useEffect(() => {
+    let interval;
+
+    if (isRunning) {
+      interval = setInterval(() => {
+        setSeconds((prev) => prev + 1);
+      }, 1000);
+    }
+
+    return () => clearInterval(interval);
+  }, [isRunning]);
+
+  const formatTime = (totalSeconds) => {
+    const hours = Math.floor(totalSeconds / 3600);
+    const minutes = Math.floor((totalSeconds % 3600) / 60);
+    const secs = totalSeconds % 60;
+
+    return `${String(hours).padStart(2, "0")}:${String(minutes).padStart(
+      2,
+      "0"
+    )}:${String(secs).padStart(2, "0")}`;
+  };
+
+  const saveContent = async (type) => {
+    if (contentText.trim() === "") {
+      alert("Please paste or write content first.");
+      return;
+    }
+
+    try {
+      const response = await fetch(`${API_URL}/contents`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          user_id: userId,
+          material_id: materialId,
+          type: type,
+          content_text: contentText,
+          created_at: new Date(),
+        }),
+      });
+
+      const data = await response.json();
+
+      if (response.ok) {
+        alert(`${type} saved successfully!`);
+        console.log(data);
+      } else {
+        alert("Failed to save content.");
+        console.log(data);
+      }
+    } catch (error) {
+      console.error(error);
+      alert("Backend connection failed.");
+    }
+  };
+
+  const createFlashcard = async () => {
+    if (contentText.trim() === "") {
+      alert("Please enter content first.");
+      return;
+    }
+
+    try {
+      const response = await fetch(`${API_URL}/flashcards`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          user_id: userId,
+          material_id: materialId,
+          question: "Flashcard question from uploaded content",
+          answer: contentText,
+          created_at: new Date(),
+        }),
+      });
+
+      const data = await response.json();
+
+      if (response.ok) {
+        alert("Flashcard created successfully!");
+        console.log(data);
+      } else {
+        alert("Failed to create flashcard.");
+        console.log(data);
+      }
+    } catch (error) {
+      console.error(error);
+      alert("Backend connection failed.");
+    }
+  };
+
+  const createExam = async () => {
+    try {
+      const response = await fetch(`${API_URL}/exams`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          user_id: userId,
+          material_id: materialId,
+          type: "practice",
+          number_of_questions: 5,
+          duration: 30,
+          created_at: new Date(),
+        }),
+      });
+
+      const data = await response.json();
+
+      if (response.ok) {
+        alert("Exam created successfully!");
+        console.log(data);
+      } else {
+        alert("Failed to create exam.");
+        console.log(data);
+      }
+    } catch (error) {
+      console.error(error);
+      alert("Backend connection failed.");
+    }
+  };
+
+  const saveStudySession = async () => {
+    if (seconds === 0) {
+      setIsRunning(false);
+      return;
+    }
+
+    try {
+      const response = await fetch(`${API_URL}/study-sessions`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          user_id: userId,
+          duration: seconds,
+          date: new Date(),
+        }),
+      });
+
+      const data = await response.json();
+
+      if (response.ok) {
+        alert("Study session saved successfully!");
+        console.log(data);
+      } else {
+        alert("Failed to save study session.");
+        console.log(data);
+      }
+    } catch (error) {
+      console.error(error);
+      alert("Backend connection failed.");
+    }
+
+    setIsRunning(false);
+    setSeconds(0);
+  };
+
+ const sendQuestion = async () => {
+  if (aiQuestion.trim() === "") {
+    alert("Please write a question first.");
+    return;
+  }
+
+  try {
+    const response = await fetch(`${API_URL}/questions`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        exam_id: 1,
+        type: "ai",
+        question_text: aiQuestion,
+      }),
+    });
+
+    const data = await response.json();
+
+    if (response.ok) {
+      alert("Question saved successfully!");
+      console.log(data);
+      setAiQuestion("");
+    } else {
+      alert("Failed to save question.");
+      console.log(data);
+    }
+  } catch (error) {
+    console.error(error);
+    alert("Backend connection failed.");
+  }
+};
+
   return (
     <div className="min-h-screen bg-slate-100 px-6 py-6">
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        {/* Left side */}
         <div className="flex flex-col gap-6">
           <div className="bg-white rounded-2xl shadow-sm border border-slate-200 p-6">
             <h2 className="flex items-center gap-2 text-2xl font-semibold text-slate-800 mb-5">
@@ -27,7 +238,18 @@ function Home() {
               Upload Content
             </h2>
 
-            <button className="w-full bg-[#1e3a8a] hover:bg-[#1a3277] text-white rounded-xl py-3 font-medium flex items-center justify-center gap-2 mb-4 transition">
+            <textarea
+              value={contentText}
+              onChange={(e) => setContentText(e.target.value)}
+              placeholder="Paste your study content here..."
+              className="w-full border border-slate-300 rounded-xl px-4 py-3 mb-4 outline-none focus:ring-2 focus:ring-blue-300"
+              rows="3"
+            />
+
+            <button
+              onClick={() => saveContent("text")}
+              className="w-full bg-[#1e3a8a] hover:bg-[#1a3277] text-white rounded-xl py-3 font-medium flex items-center justify-center gap-2 mb-4 transition"
+            >
               <Paperclip size={18} />
               Attach Files
             </button>
@@ -60,22 +282,34 @@ function Home() {
             </div>
 
             <div className="grid grid-cols-2 gap-3">
-              <button className="bg-[#1e3a8a] hover:bg-[#1a3277] text-white rounded-xl py-3 font-medium flex items-center justify-center gap-2 transition">
+              <button
+                onClick={() => saveContent("explanation")}
+                className="bg-[#1e3a8a] hover:bg-[#1a3277] text-white rounded-xl py-3 font-medium flex items-center justify-center gap-2 transition"
+              >
                 <BookOpen size={18} />
                 Explain
               </button>
 
-              <button className="bg-sky-500 hover:bg-sky-600 text-white rounded-xl py-3 font-medium flex items-center justify-center gap-2 transition">
+              <button
+                onClick={() => saveContent("summary")}
+                className="bg-sky-500 hover:bg-sky-600 text-white rounded-xl py-3 font-medium flex items-center justify-center gap-2 transition"
+              >
                 <AlignJustify size={18} />
                 Summarize
               </button>
 
-              <button className="bg-emerald-500 hover:bg-emerald-600 text-white rounded-xl py-3 font-medium flex items-center justify-center gap-2 transition">
+              <button
+                onClick={createFlashcard}
+                className="bg-emerald-500 hover:bg-emerald-600 text-white rounded-xl py-3 font-medium flex items-center justify-center gap-2 transition"
+              >
                 <Layers size={18} />
                 Flashcards
               </button>
 
-              <button className="bg-amber-500 hover:bg-amber-600 text-white rounded-xl py-3 font-medium flex items-center justify-center gap-2 transition">
+              <button
+                onClick={createExam}
+                className="bg-amber-500 hover:bg-amber-600 text-white rounded-xl py-3 font-medium flex items-center justify-center gap-2 transition"
+              >
                 <ClipboardList size={18} />
                 Exams
               </button>
@@ -88,14 +322,30 @@ function Home() {
               Study Timer
             </h2>
 
-            <button className="w-full bg-emerald-500 hover:bg-emerald-600 text-white rounded-xl py-3 font-medium flex items-center justify-center gap-2 transition">
-              <Play size={18} />
-              Start Study Session
-            </button>
+            <div className="text-center text-5xl font-bold text-[#1e3a8a] mb-5">
+              {formatTime(seconds)}
+            </div>
+
+            <div className="grid grid-cols-2 gap-3">
+              <button
+                onClick={() => setIsRunning(!isRunning)}
+                className="bg-emerald-500 hover:bg-emerald-600 text-white rounded-xl py-3 font-medium flex items-center justify-center gap-2 transition"
+              >
+                {isRunning ? <Pause size={18} /> : <Play size={18} />}
+                {isRunning ? "Pause" : "Start Study Session"}
+              </button>
+
+              <button
+                onClick={saveStudySession}
+                className="bg-slate-500 hover:bg-slate-600 text-white rounded-xl py-3 font-medium flex items-center justify-center gap-2 transition"
+              >
+                <RotateCcw size={18} />
+                Reset
+              </button>
+            </div>
           </div>
         </div>
 
-        {/* Right side */}
         <div className="bg-white rounded-2xl shadow-sm border border-slate-200 p-6 flex flex-col">
           <h2 className="flex items-center gap-2 text-2xl font-semibold text-slate-800 mb-5">
             <MessageSquare size={22} className="text-sky-500" />
@@ -142,10 +392,15 @@ function Home() {
           <div className="mt-auto flex items-center gap-3">
             <input
               type="text"
+              value={aiQuestion}
+              onChange={(e) => setAiQuestion(e.target.value)}
               placeholder="Ask anything..."
               className="flex-1 border border-slate-300 rounded-xl px-4 py-3 outline-none focus:ring-2 focus:ring-blue-300"
             />
-            <button className="bg-[#1e3a8a] hover:bg-[#1a3277] text-white p-3 rounded-xl transition">
+            <button
+              onClick={sendQuestion}
+              className="bg-[#1e3a8a] hover:bg-[#1a3277] text-white p-3 rounded-xl transition"
+            >
               <Send size={18} />
             </button>
           </div>

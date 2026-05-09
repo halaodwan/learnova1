@@ -1,21 +1,10 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Home } from "lucide-react";
 import { Link } from "react-router-dom";
-
 
 import FlashcardItem from "./components/FlashcardItem";
 import Controls from "./components/Controls";
 import CardCounter from "./components/CardCounter";
-
-
-const sampleCards = [
-  { q: "What is DNS?", a: "DNS (Domain Name System) is a system that translates easy-to-remember domain names like google.com into numerical IP addresses like142.250.190.78 In short, it’s the (internet phonebook) that helps your browser find the correct website without remembering complex numbers." },
-  { q: "What does HTTP stand for?", a: "The HyperText Transfer Protocol." },
-  { q: "Define a Server:", a: "A Server is a computer that provides data, resources, or services to other computers over a network." },
-  { q: "What is JavaScript used to?", a: "Making web pages interactive." },
-  { q: "What is a DataBase used for?", a: "Stong and managing data for websites or application." },
-];
-
 
 const previousSets = [
   { title: "Backend Ch. 3", count: 12, date: "Feb 28" },
@@ -24,57 +13,109 @@ const previousSets = [
 ];
 
 const Flashcards = () => {
+  const [flashcards, setFlashcards] = useState([]);
+  const [loading, setLoading] = useState(true);
+
   const [currentIndex, setCurrentIndex] = useState(0);
   const [flipped, setFlipped] = useState(false);
 
+  useEffect(() => {
+    fetchFlashcards();
+  }, []);
+
+  const fetchFlashcards = async () => {
+    try {
+      const response = await fetch(
+        "http://localhost:3000/flashcards"
+      );
+
+      const data = await response.json();
+
+      const formattedCards = data.map((card) => ({
+        q: card.question,
+        a: card.answer,
+      }));
+
+      setFlashcards(formattedCards);
+    } catch (error) {
+      console.error(
+        "Error fetching flashcards:",
+        error
+      );
+    } finally {
+      setLoading(false);
+    }
+  };
+
   const goNext = () => {
     setFlipped(false);
-    setCurrentIndex((i) => Math.min(i + 1, sampleCards.length - 1));
+    setCurrentIndex((i) =>
+      Math.min(i + 1, flashcards.length - 1)
+    );
   };
 
   const goPrev = () => {
     setFlipped(false);
-    setCurrentIndex((i) => Math.max(i - 1, 0));
+    setCurrentIndex((i) =>
+      Math.max(i - 1, 0)
+    );
   };
 
-  const card = sampleCards[currentIndex];
+  if (loading) {
+    return (
+      <p className="text-center mt-10 text-lg">
+        Loading flashcards...
+      </p>
+    );
+  }
+
+  if (flashcards.length === 0) {
+    return (
+      <p className="text-center mt-10 text-lg">
+        No flashcards found.
+      </p>
+    );
+  }
+
+  const card = flashcards[currentIndex];
 
   return (
     <div className="max-w-2xl mx-auto animate-fade-in p-4">
-
-      
       <div className="flex items-center justify-between mb-6">
-        <h1 className="text-2xl font-bold">🃏 Flashcards</h1>
+        <h1 className="text-2xl font-bold">
+          🃏 Flashcards
+        </h1>
 
         <Link to="/">
           <button className="flex items-center gap-1.5 text-sm text-gray-500 hover:text-blue-600 transition-colors">
-            <Home className="w-4 h-4" /> Back to Home
+            <Home className="w-4 h-4" />
+            Back to Home
           </button>
         </Link>
       </div>
 
       <CardCounter
         current={currentIndex + 1}
-        total={sampleCards.length}
+        total={flashcards.length}
       />
 
-      
       <FlashcardItem
         card={card}
         flipped={flipped}
         setFlipped={setFlipped}
       />
 
-      
       <Controls
         goPrev={goPrev}
         goNext={goNext}
         resetFlip={() => setFlipped(false)}
         disablePrev={currentIndex === 0}
-        disableNext={currentIndex === sampleCards.length - 1}
+        disableNext={
+          currentIndex ===
+          flashcards.length - 1
+        }
       />
 
-      
       <div className="bg-white dark:bg-gray-800 rounded-xl shadow-lg p-5 border border-gray-200 dark:border-gray-700">
         <h3 className="text-lg font-semibold mb-3 !text-white">
           📚 Previous Flashcard Sets
@@ -90,10 +131,12 @@ const Flashcards = () => {
                 <p className="text-sm font-medium text-gray-900 dark:text-white">
                   {set.title}
                 </p>
+
                 <p className="text-xs text-gray-500 dark:text-gray-400">
                   {set.count} cards
                 </p>
               </div>
+
               <span className="text-xs text-gray-500 dark:text-gray-400">
                 {set.date}
               </span>
@@ -101,7 +144,6 @@ const Flashcards = () => {
           ))}
         </div>
       </div>
-
     </div>
   );
 };

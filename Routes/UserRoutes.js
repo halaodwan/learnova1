@@ -6,13 +6,22 @@ const {
   getUserById,
   createUser,
   updateUser,
-  deleteUser
+  deleteUser,
+  loginUser
 } = require('../controllers/UserController');
 
-router.get('/', getAllUsers);
-router.get('/:id', getUserById);
+const auth = require('../middleware/auth.js');
+
+
+// 🔓 Public routes
+router.post('/login', loginUser);
 router.post('/', createUser);
-router.put('/:id', updateUser);
-router.delete('/:id', deleteUser);
+
+
+// 🔐 Protected routes (JWT required)
+router.get('/', auth, getAllUsers);
+router.get('/:id', auth, getUserById);
+router.put('/:id', auth, updateUser);
+router.delete('/:id', auth, deleteUser);
 
 module.exports = router;
