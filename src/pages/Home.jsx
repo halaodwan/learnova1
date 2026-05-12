@@ -23,8 +23,14 @@ function Home() {
 
   const [contentText, setContentText] = useState("");
   const [aiQuestion, setAiQuestion] = useState("");
-  const [seconds, setSeconds] = useState(0);
-  const [isRunning, setIsRunning] = useState(false);
+
+  const [seconds, setSeconds] = useState(() => {
+    return Number(localStorage.getItem("studySeconds")) || 0;
+  });
+
+  const [isRunning, setIsRunning] = useState(() => {
+    return localStorage.getItem("studyRunning") === "true";
+  });
 
   const userId = 1;
   const materialId = 1;
@@ -34,12 +40,22 @@ function Home() {
 
     if (isRunning) {
       interval = setInterval(() => {
-        setSeconds((prev) => prev + 1);
+        setSeconds((prev) => {
+          const newSeconds = prev + 1;
+          localStorage.setItem("studySeconds", newSeconds);
+          return newSeconds;
+        });
       }, 1000);
     }
 
     return () => clearInterval(interval);
   }, [isRunning]);
+
+  const toggleTimer = () => {
+    const newState = !isRunning;
+    setIsRunning(newState);
+    localStorage.setItem("studyRunning", newState);
+  };
 
   const formatTime = (totalSeconds) => {
     const hours = Math.floor(totalSeconds / 3600);
@@ -159,6 +175,7 @@ function Home() {
   const saveStudySession = async () => {
     if (seconds === 0) {
       setIsRunning(false);
+      localStorage.setItem("studyRunning", "false");
       return;
     }
 
@@ -191,42 +208,44 @@ function Home() {
 
     setIsRunning(false);
     setSeconds(0);
+    localStorage.removeItem("studySeconds");
+    localStorage.setItem("studyRunning", "false");
   };
 
- const sendQuestion = async () => {
-  if (aiQuestion.trim() === "") {
-    alert("Please write a question first.");
-    return;
-  }
-
-  try {
-    const response = await fetch(`${API_URL}/questions`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        exam_id: 1,
-        type: "ai",
-        question_text: aiQuestion,
-      }),
-    });
-
-    const data = await response.json();
-
-    if (response.ok) {
-      alert("Question saved successfully!");
-      console.log(data);
-      setAiQuestion("");
-    } else {
-      alert("Failed to save question.");
-      console.log(data);
+  const sendQuestion = async () => {
+    if (aiQuestion.trim() === "") {
+      alert("Please write a question first.");
+      return;
     }
-  } catch (error) {
-    console.error(error);
-    alert("Backend connection failed.");
-  }
-};
+
+    try {
+      const response = await fetch(`${API_URL}/questions`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          exam_id: 1,
+          type: "ai",
+          question_text: aiQuestion,
+        }),
+      });
+
+      const data = await response.json();
+
+      if (response.ok) {
+        alert("Question saved successfully!");
+        console.log(data);
+        setAiQuestion("");
+      } else {
+        alert("Failed to save question.");
+        console.log(data);
+      }
+    } catch (error) {
+      console.error(error);
+      alert("Backend connection failed.");
+    }
+  };
 
   return (
     <div className="min-h-screen bg-slate-100 px-6 py-6">
@@ -328,7 +347,7 @@ function Home() {
 
             <div className="grid grid-cols-2 gap-3">
               <button
-                onClick={() => setIsRunning(!isRunning)}
+                onClick={toggleTimer}
                 className="bg-emerald-500 hover:bg-emerald-600 text-white rounded-xl py-3 font-medium flex items-center justify-center gap-2 transition"
               >
                 {isRunning ? <Pause size={18} /> : <Play size={18} />}

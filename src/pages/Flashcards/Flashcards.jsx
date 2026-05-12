@@ -26,7 +26,7 @@ const Flashcards = () => {
   const fetchFlashcards = async () => {
     try {
       const response = await fetch(
-        "http://localhost:3000/flashcards"
+        "http://localhost:3000/Flashcards"
       );
 
       const data = await response.json();

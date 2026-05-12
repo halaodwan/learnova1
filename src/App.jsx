@@ -80,7 +80,7 @@ function App() {
         />
 
         <Route
-          path="/flashcards"
+          path="/Flashcards"
           element={
             <PrivateRoute>
               <Flashcards />
