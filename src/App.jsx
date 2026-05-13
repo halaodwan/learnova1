@@ -3,6 +3,7 @@ import { useState } from "react";
 import PrivateRoute from "./components/PrivateRoute";
 import Navbar from "./components/Navbar";
 import LoginModal from "./components/LoginModal";
+import PrivateRoute from "./components/PrivateRoute";
 
 
 
