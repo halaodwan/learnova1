@@ -3,6 +3,7 @@ import { useState } from "react";
 
 import Navbar from "./components/Navbar";
 import LoginModal from "./components/LoginModal";
+import PrivateRoute from "./components/PrivateRoute";
 
 import Home from "./pages/Home";
 import Exams from "./pages/Exams";
@@ -10,9 +11,8 @@ import Dashboard from "./pages/Dashboard";
 import Flashcards from "./pages/Flashcards/Flashcards";
 import Explanations from "./pages/Explanations";
 
-import PrivateRoute from "./components/PrivateRoute";
-
 function App() {
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [showLogin, setShowLogin] = useState(true);
 
   return (
@@ -25,46 +25,26 @@ function App() {
           onClose={() => setShowLogin(false)}
           onLoginSuccess={(token) => {
             localStorage.setItem("token", token);
+            setIsLoggedIn(true);
             setShowLogin(false);
           }}
         />
       )}
 
-      <Navbar />
+      {/* Navbar only after login */}
       {isLoggedIn && <Navbar />}
 
-      {isLoggedIn && (
-        <Routes>
-          <Route path="/" element={<Home />} />
-          <Route path="/exams" element={<Exams />} />
-          <Route path="/dashboard" element={<Dashboard />} />
-          <Route path="/explanations" element={<Explanations />} />
-          <Route path="/flashcards" element={<Flashcards />} />
-        </Routes>
-      )}
-
-
-      {!isLoggedIn && !showLogin && (
-        <div className="flex justify-center mt-10">
-          <button
-            onClick={() => setShowLogin(true)}
-            className="bg-blue-600 text-white p-2 rounded"
-          >
-            Login
-          </button>
-        </div>
-      )}
-
+      {/* Routes */}
       <Routes>
 
-        {/* Public Route */}
+        {/* Public route */}
         <Route path="/" element={<Home />} />
 
-        {/* Protected Routes */}
+        {/* Protected routes */}
         <Route
           path="/dashboard"
           element={
-            <PrivateRoute>
+            <PrivateRoute isLoggedIn={isLoggedIn}>
               <Dashboard />
             </PrivateRoute>
           }
@@ -73,7 +53,7 @@ function App() {
         <Route
           path="/exams"
           element={
-            <PrivateRoute>
+            <PrivateRoute isLoggedIn={isLoggedIn}>
               <Exams />
             </PrivateRoute>
           }
@@ -82,7 +62,7 @@ function App() {
         <Route
           path="/Flashcards"
           element={
-            <PrivateRoute>
+            <PrivateRoute isLoggedIn={isLoggedIn}>
               <Flashcards />
             </PrivateRoute>
           }
@@ -91,16 +71,12 @@ function App() {
         <Route
           path="/explanations"
           element={
-            <PrivateRoute>
+            <PrivateRoute isLoggedIn={isLoggedIn}>
               <Explanations />
             </PrivateRoute>
           }
         />
 
-        
-        <Route path="/explanations" element={<Explanations />} />
-        <Route path="/flashcards" element={<Flashcards />} />
-        
       </Routes>
 
     </BrowserRouter>
