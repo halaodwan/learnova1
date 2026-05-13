@@ -4,8 +4,11 @@ import PrivateRoute from "./components/PrivateRoute";
 import Navbar from "./components/Navbar";
 import LoginModal from "./components/LoginModal";
 import PrivateRoute from "./components/PrivateRoute";
+<<<<<<< Updated upstream
 
 
+=======
+>>>>>>> Stashed changes
 
 import Home from "./pages/Home";
 import Exams from "./pages/Exams";
@@ -66,7 +69,7 @@ function App() {
         />
 
         <Route
-          path="/Flashcards"
+          path="/flashcards"
           element={
             <PrivateRoute isLoggedIn={isLoggedIn}>
               <Flashcards />

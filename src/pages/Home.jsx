@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import {
   Paperclip,
   FileText,
@@ -20,9 +20,12 @@ import {
 
 function Home() {
   const API_URL = "http://localhost:3000";
+  const fileInputRef = useRef(null);
 
   const [contentText, setContentText] = useState("");
   const [aiQuestion, setAiQuestion] = useState("");
+  const [uploadedFileName, setUploadedFileName] = useState("");
+
 
   const [seconds, setSeconds] = useState(() => {
     return Number(localStorage.getItem("studySeconds")) || 0;
@@ -66,6 +69,41 @@ function Home() {
       2,
       "0"
     )}:${String(secs).padStart(2, "0")}`;
+  };
+
+  const uploadFile = async (file) => {
+    if (!file) {
+      alert("Please choose a file first.");
+      return;
+    }
+
+    const formData = new FormData();
+    formData.append("file", file);
+
+    try {
+      const response = await fetch(
+        `${API_URL}/contents/upload-file`,
+        {
+          method: "POST",
+          body: formData,
+        }
+      );
+
+      const data = await response.json();
+
+      if (response.ok) {
+        alert("File uploaded successfully!");
+        console.log(data);
+
+        setUploadedFileName(data.fileName);
+      } else {
+        alert("Failed to upload file.");
+        console.log(data);
+      }
+    } catch (error) {
+      console.error(error);
+      alert("Backend connection failed.");
+    }
   };
 
   const saveContent = async (type) => {
@@ -265,13 +303,36 @@ function Home() {
               rows="3"
             />
 
+            <input
+              type="file"
+              ref={fileInputRef}
+              className="hidden"
+              onChange={(e) => uploadFile(e.target.files[0])}
+            />
+
             <button
-              onClick={() => saveContent("text")}
+              onClick={() => fileInputRef.current.click()}
               className="w-full bg-[#1e3a8a] hover:bg-[#1a3277] text-white rounded-xl py-3 font-medium flex items-center justify-center gap-2 mb-4 transition"
             >
               <Paperclip size={18} />
               Attach Files
             </button>
+
+            {uploadedFileName && (
+              <div className="flex items-center gap-3 bg-slate-100 border border-slate-200 rounded-xl px-4 py-3 mb-4">
+                <File size={20} className="text-slate-600" />
+
+                <div>
+                  <p className="text-sm font-medium text-slate-700">
+                    Uploaded file
+                  </p>
+
+                  <p className="text-xs text-slate-500">
+                    {uploadedFileName}
+                  </p>
+                </div>
+              </div>
+            )}
 
             <div className="grid grid-cols-5 gap-3 mb-5">
               <div className="bg-slate-100 rounded-xl h-20 flex flex-col items-center justify-center text-slate-600 text-sm">

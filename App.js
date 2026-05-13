@@ -19,6 +19,8 @@ const db = require("./models");
 db.sequelize.authenticate()
   .then(() => console.log("DB CONNECTED ✅"))
   .catch(err => console.log("DB ERROR ❌", err));
+// NEW: serve uploaded files
+app.use('/uploads', express.static('uploads'));
 
 
 app.use((req, res, next) => {
@@ -41,6 +43,9 @@ const studySessionRoutes = require('./Routes/StudySessionRoutes');
    USE ROUTES (NO /api)
 ========================= */
 console.log("Users routes loaded");
+
+// Use routes
+
 app.use('/users', userRoutes);
 app.post('/hello', (req, res) => {
   console.log("HELLO HIT");
@@ -61,6 +66,8 @@ app.use('/study-sessions', studySessionRoutes);
    TEST ROUTE
 ========================= */
 
+// Test route
+
 app.get('/', (req, res) => {
   res.send('Backend is running');
 });
@@ -68,6 +75,8 @@ app.get('/', (req, res) => {
 /* =========================
    START SERVER
 ========================= */
+
+// Start server
 
 const PORT = 3001;
 
