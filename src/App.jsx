@@ -1,9 +1,10 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { useState } from "react";
-
+import PrivateRoute from "./components/PrivateRoute";
 import Navbar from "./components/Navbar";
 import LoginModal from "./components/LoginModal";
-import PrivateRoute from "./components/PrivateRoute";
+
+
 
 import Home from "./pages/Home";
 import Exams from "./pages/Exams";
@@ -17,7 +18,7 @@ function App() {
 
   return (
     <BrowserRouter>
-
+          
       {/* Login Modal */}
       {showLogin && (
         <LoginModal
