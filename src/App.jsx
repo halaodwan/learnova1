@@ -3,12 +3,9 @@ import { useState } from "react";
 import PrivateRoute from "./components/PrivateRoute";
 import Navbar from "./components/Navbar";
 import LoginModal from "./components/LoginModal";
-import PrivateRoute from "./components/PrivateRoute";
-<<<<<<< Updated upstream
 
 
-=======
->>>>>>> Stashed changes
+
 
 import Home from "./pages/Home";
 import Exams from "./pages/Exams";
@@ -22,12 +19,9 @@ function App() {
 
   return (
     <BrowserRouter>
-<<<<<<< HEAD
           
       {/* Login Modal */}
-=======
 
->>>>>>> bbca9ec (restore stashed changes after revert)
       {showLogin && (
         <LoginModal
           isOpen={showLogin}
