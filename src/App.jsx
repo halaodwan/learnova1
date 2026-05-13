@@ -19,8 +19,12 @@ function App() {
 
   return (
     <BrowserRouter>
+<<<<<<< HEAD
           
       {/* Login Modal */}
+=======
+
+>>>>>>> bbca9ec (restore stashed changes after revert)
       {showLogin && (
         <LoginModal
           isOpen={showLogin}

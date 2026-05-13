@@ -2,24 +2,14 @@ import { Home, ArrowRightLeft, Lightbulb, History } from "lucide-react";
 import { Link, useSearchParams } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 
-const sampleExplanation = `**Photosynthesis** is the process by which green plants, algae, and some bacteria convert light energy — usually from the sun — into chemical energy stored in glucose.
+const sampleExplanation = 'explanation content';
 
-**The Equation:**
-6CO₂ + 6H₂O + light energy → C₆H₁₂O₆ + 6O₂
-
-**Key Steps:**
-1. **Light-Dependent Reactions** — occur in the thylakoid membranes. Water molecules are split, releasing oxygen. ATP and NADPH are produced.
-2. **Calvin Cycle (Light-Independent)** — occurs in the stroma. CO₂ is fixed into glucose using ATP and NADPH from the first stage.
-
-**Why It Matters:**
-Photosynthesis is the foundation of most food chains and produces the oxygen we breathe.`;
-
-const sampleSummary = `Photosynthesis converts sunlight into glucose using CO₂ and water, releasing oxygen. It involves two stages: light-dependent reactions (in thylakoids) and the Calvin Cycle (in stroma). It's essential for food chains and oxygen production.`;
+const sampleSummary = 'summary content';
 
 const previousItems = [
-  { title: "Photosynthesis Explained", type: "Explanation", date: "Feb 28" },
-  { title: "Cell Division Summary", type: "Summary", date: "Feb 26" },
-  { title: "Newton's Laws Explained", type: "Explanation", date: "Feb 24" },
+  { title: " Explain", type: "Explanation", date: "Feb 28" },
+  { title: "Summary", type: "Summary", date: "Feb 26" },
+  { title: "Explained", type: "Explanation", date: "Feb 24" },
 ];
 
 const Explanations = () => {
@@ -66,7 +56,7 @@ const Explanations = () => {
             exit={{ opacity: 0, y: -8 }}
             className="glass-card rounded-xl p-6 mb-5"
           >
-            <h3 className="text-lg mb-3 capitalize">{mode}: Photosynthesis</h3>
+            <h3 className="text-lg mb-3 capitalize">{mode}: example</h3>
             <div className="prose prose-sm max-w-none text-foreground whitespace-pre-line text-sm leading-relaxed">
               {content}
             </div>
